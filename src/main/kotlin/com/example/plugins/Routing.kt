@@ -47,6 +47,17 @@ fun Application.configureRouting() {
             }
         }
 
+        /**
+         * Endpoint para obtener todos los estudiantes:
+         * GET /students
+         *
+         * Endpoint para agregar un estudiante:
+         * POST /students
+         *
+         * Endpoint para obtener detalles de un estudiante por su ID:
+         * GET /students/{id}
+         */
+
 
     }
 }
