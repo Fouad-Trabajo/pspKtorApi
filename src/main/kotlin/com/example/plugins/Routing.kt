@@ -20,7 +20,7 @@ fun Application.configureRouting() {
             call.respondText("<h1>holaa</h1>")
         }
 
-        route("/studens") { // para no repetir la misma ruta
+        route("/students") { // para no repetir la misma ruta
 
             get {
                 call.respond(ManagementStudents.getStudents())
@@ -28,10 +28,24 @@ fun Application.configureRouting() {
             get("/course/{course}") {
                 val courseTxt = call.parameters["course"]
                 val course = Course.valueOf(courseTxt!!)
+                val students = ManagementStudents.getStudentsByCourse(course)
+                if (students.isEmpty()) {
+                    call.respondText("No hay alumnos matriculados en ese curso")
+                } else {
+                    call.respond(students)
+                }
+            }
+
+            get("/name/{name}") {
+                val name = call.parameters["name"]
+                val students = ManagementStudents.getStudentsByName(name!!)
+                if (students == null) { //no es una lista, solo devuelve un objeto
+                    call.respondText("No hay alumnos con ese nombre")
+                } else {
+                    call.respond(students)
+                }
             }
         }
-
-
 
 
     }
