@@ -3,9 +3,10 @@ package com.example.plugins
 import com.example.domain.model.Course
 import com.example.domain.model.ManagementStudents
 import com.example.domain.model.Student
-import com.example.domain.model.Subject
+import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
+import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -20,6 +21,7 @@ fun Application.configureRouting() {
             call.respondText("<h1>holaa</h1>")
         }
 
+        // Ruta común
         route("/students") { // para no repetir la misma ruta
 
             get {
@@ -44,6 +46,19 @@ fun Application.configureRouting() {
                 } else {
                     call.respond(students)
                 }
+            }
+        }
+
+        // se recoge la llamada post para insertar un nuevo alumno
+        post {
+            try {
+                val student = call.receive<Student>()
+                val studentInsert = ManagementStudents.newStudent(student)
+                call.respond(studentInsert)
+            }catch(jsone: JsonConvertException){
+                call.respondText("¡Datos inválidos!")
+            } catch(e: IllegalStateException) {
+                call.respondText(e.message.toString())
             }
         }
 
