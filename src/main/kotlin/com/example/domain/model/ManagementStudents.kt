@@ -12,14 +12,14 @@ object ManagementStudents {
             "pedro@gmail.com",
             listOf(Subject.DDI, Subject.AAD, Subject.PMDM)
         ), Student(
-            1,
+            2,
             "Pepe",
             "12/02/2000",
             Course.DAM1,
             "pepe@gmail.com",
             listOf(Subject.AAD, Subject.PMDM)
         ), Student(
-            1,
+            3,
             "Alicia",
             "05/06/2000",
             Course.DAM1,
@@ -70,5 +70,9 @@ object ManagementStudents {
             students.add(student)
         }
         return studentFinal
+    }
+
+    fun deleteStudent(id: Int): Boolean {
+        return students.removeIf { it.id == id }
     }
 }

@@ -55,12 +55,42 @@ fun Application.configureRouting() {
                 val student = call.receive<Student>()
                 val studentInsert = ManagementStudents.newStudent(student)
                 call.respond(studentInsert)
-            }catch(jsone: JsonConvertException){
+            } catch (jsone: JsonConvertException) {
                 call.respondText("¡Datos inválidos!")
-            } catch(e: IllegalStateException) {
+            } catch (e: IllegalStateException) {
                 call.respondText(e.message.toString())
             }
         }
+
+        // Con el navegador, porque no funciona postman en los ordenadores de clase
+        get("/deleteStudent/{id}") {
+            val id = call.parameters["id"]
+            if (id != null) {
+                if (ManagementStudents.deleteStudent(id.toInt())) {
+                    call.respondText("Alumno con id $id borrado correctamente")
+                } else {
+                    call.respondText("No se puede borrar el alumno con ese id")
+                }
+            } else {
+                call.respondText("¡id inválido, campo requerido!")
+            }
+        }
+
+        // Con postman sería de esta forma
+        delete("/deleteStudent") {
+            val id = call.receive<Int>()
+            if (id != null) {
+                if (ManagementStudents.deleteStudent(id)) {
+                    call.respondText("Alumno con id $id borrado correctamente")
+                } else {
+                    call.respondText("No existe un alumno con ese id")
+                }
+            } else {
+                call.respondText("¡id inválido, campo requerido!")
+            }
+        }
+
+        // Tercera forma de hacerlo
 
         /**
          * Endpoint para obtener todos los estudiantes:
@@ -71,6 +101,9 @@ fun Application.configureRouting() {
          *
          * Endpoint para obtener detalles de un estudiante por su ID:
          * GET /students/{id}
+         *
+         * Endpoint para borrar un estudiante por su ID:
+         * DELETE /students/{id}
          */
 
 
