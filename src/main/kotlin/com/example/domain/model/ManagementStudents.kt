@@ -15,7 +15,7 @@ object ManagementStudents {
             2,
             "Pepe",
             "12/02/2000",
-            Course.DAM1,
+            Course.DAM2,
             "pepe@gmail.com",
             listOf(Subject.AAD, Subject.PMDM)
         ), Student(

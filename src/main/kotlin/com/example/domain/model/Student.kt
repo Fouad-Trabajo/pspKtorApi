@@ -14,9 +14,9 @@ data class Student(
 
 
 enum class Course {
-    DAM1, DAM2 ,DAW1, DAW2, ASIR1, ASIR2, SMR1, SMR2
+    DAM1, DAM2, DAW1, DAW2, ASIR1, ASIR2, SMR1, SMR2
 }
 
-enum class Subject{
+enum class Subject {
     EIE, PSP, AAD, PMDM, DDI, SGE
 }
