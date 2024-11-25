@@ -134,7 +134,7 @@ fun Application.configureRouting() {
             }
 
             // Obtener aula por id
-            get("/{id}") {
+            get("id/{id}") {
                 val id = call.parameters["id"]?.toInt()
                 if (id != null) {
                     val aula = GestionAulas.getAulaPorId(id)
@@ -148,76 +148,89 @@ fun Application.configureRouting() {
                 }
             }
 
-            // Obtener aulas por pabellón
-            get("/pabellon/{inputPabellon}") {
-                val pabellon = call.parameters["inputPabellon"]
-                if (pabellon != null) {
-                    val aulas = GestionAulas.getPabellon(pabellon)
-                    if (aulas.isEmpty()) {
-                        call.respondText("No hay aulas en el pabellón $pabellon")
-                    } else {
-                        call.respond(aulas)
-                    }
+            //obtener aulas por curso: Objeto Curso
+            get("/curso/{curso}") {
+                val cursoTxt = call.parameters["curso"]
+                val curso = Course.valueOf(cursoTxt!!)
+                val cursos = GestionAulas.getAulaPorCurso(curso)
+                if (cursos.isEmpty()) {
+                    call.respondText("No se imparten curosos en ")
                 } else {
-                    call.respondText("El campo de pabellón es obligatorio")
-                }
-            }
+                    call.respond(cursos)
 
-            // Obtener aula por denominación
-            get("/denominacion/{denominacion}") {
-                val denominacion = call.parameters["denominacion"]
-                if (denominacion != null) {
-                    val aula = GestionAulas.getAulaPorDenominacion(denominacion)
-                    if (aula == null) {
-                        call.respondText("No hay aula con la denominación $denominacion")
+                }
+
+                // Obtener aulas por pabellón: String
+                get("/pabellon/{inputPabellon}") {
+                    val pabellon = call.parameters["inputPabellon"]
+                    if (pabellon != null) {
+                        val aulas = GestionAulas.getPabellon(pabellon)
+                        if (aulas.isEmpty()) {
+                            call.respondText("No hay aulas en el pabellón $pabellon")
+                        } else {
+                            call.respond(aulas)
+                        }
                     } else {
-                        call.respond(aula)
+                        call.respondText("El campo de pabellón es obligatorio")
                     }
-                } else {
-                    call.respondText("El campo de denominación es obligatorio")
                 }
-            }
 
-            // Insertar una nueva aula en postMan
-            post {
-                try {
-                    val aula = call.receive<Aula>()
-                    val aulaInsert = GestionAulas.nuevaClase(aula)
-                    call.respond(aulaInsert)
-                } catch (e: IllegalStateException) {
-                    call.respondText(e.message.toString())
-                } catch (e: Exception) {
-                    call.respondText("¡Datos inválidos! ${e.message}")
-                }
-            }
-
-            // borrar desde el navegador
-            get("/deleteAula/{id}") {
-                val id = call.parameters["id"]?.toInt()
-                if (id != null) {
-                    val success = GestionAulas.deleteAula(id)
-                    if (success) {
-                        call.respondText("Aula con id $id borrada correctamente")
+                // Obtener aula por denominación: String
+                get("/denominacion/{denominacion}") {
+                    val denominacion = call.parameters["denominacion"]
+                    if (denominacion != null) {
+                        val aula = GestionAulas.getAulaPorDenominacion(denominacion)
+                        if (aula == null) {
+                            call.respondText("No hay aula con la denominación $denominacion")
+                        } else {
+                            call.respond(aula)
+                        }
                     } else {
-                        call.respondText("No se puede borrar el aula con id $id")
+                        call.respondText("El campo de denominación es obligatorio")
                     }
-                } else {
-                    call.respondText("¡id inválido!")
                 }
-            }
 
-            // borrar desde el postman
-            delete("/deleteAula") {
-                try {
-                    val id = call.receive<Int>()
-                    val success = GestionAulas.deleteAula(id)
-                    if (success) {
-                        call.respondText("Aula con id $id borrada correctamente")
-                    } else {
-                        call.respondText("No existe un aula con id $id")
+                // Insertar una nueva aula en postMan
+                post {
+                    try {
+                        val aula = call.receive<Aula>()
+                        val aulaInsert = GestionAulas.nuevaClase(aula)
+                        call.respond(aulaInsert)
+                    } catch (e: IllegalStateException) {
+                        call.respondText(e.message.toString())
+                    } catch (e: Exception) {
+                        call.respondText("¡Datos inválidos! ${e.message}")
                     }
-                } catch (e: Exception) {
-                    call.respondText("¡id inválido! ${e.message}")
+                }
+
+                // borrar desde el navegador
+                get("/deleteAula/{id}") {
+                    val id = call.parameters["id"]?.toInt()
+                    if (id != null) {
+                        val success = GestionAulas.deleteAula(id)
+                        if (success) {
+                            call.respondText("Aula con id $id borrada correctamente")
+                        } else {
+                            call.respondText("No se puede borrar el aula con id $id")
+                        }
+                    } else {
+                        call.respondText("¡id inválido!")
+                    }
+                }
+
+                // borrar desde el postman
+                delete("/deleteAula") {
+                    try {
+                        val id = call.receive<Int>()
+                        val success = GestionAulas.deleteAula(id)
+                        if (success) {
+                            call.respondText("Aula con id $id borrada correctamente")
+                        } else {
+                            call.respondText("No existe un aula con id $id")
+                        }
+                    } catch (e: Exception) {
+                        call.respondText("¡id inválido! ${e.message}")
+                    }
                 }
             }
         }

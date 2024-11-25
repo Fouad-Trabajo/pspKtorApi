@@ -24,6 +24,10 @@ object GestionAulas {
         it.id == id
     }
 
+    fun getAulaPorCurso(course: Course) = aulas.filter {
+        it.courses.contains(course)
+    }
+
     fun getPabellon(pabellon: String) = aulas.filter {
         it.pabellon.equals(pabellon, ignoreCase = true)
     }
